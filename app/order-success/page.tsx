@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function Success(){return <main className="container" style={{padding:"80px 0",textAlign:"center"}}><h1>Hvala na narudžbi!</h1><p className="muted">Vaša narudžba je zaprimljena. Uskoro ćemo vas kontaktirati.</p><Link className="btn btn-dark" style={{display:"inline-block",marginTop:15}} href="/shop">Nazad u trgovinu</Link></main>}

@@ -1,0 +1,2 @@
+import { createClient } from "@/lib/supabase-server"; import ProductForm from "../form"; import { notFound } from "next/navigation";
+export default async function Edit({params}:{params:Promise<{id:string}>}){const {id}=await params;const s=await createClient();const {data}=await s.from("products").select("*").eq("id",id).single();if(!data)notFound();return <main className="container" style={{padding:"35px 0",maxWidth:750}}><h1>Uredi proizvod</h1><ProductForm product={data}/></main>}
