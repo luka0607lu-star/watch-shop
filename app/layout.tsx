@@ -1,88 +1,50 @@
 import "./globals.css";
-import Link from "next/link";
-import { ShoppingBag } from "lucide-react";
+import { createClient } from "@/lib/supabase-server";
+import Header from "./components/Header";
+import type { Product } from "@/lib/types";
 
 export const metadata = {
-  title: "Watch Shop",
-  description: "Online trgovina satova"
+  title: "WATCHSHOP | Satovi",
+  description: "Online trgovina satovima",
 };
 
-export default function RootLayout({
-  children
-}: {
+export default async function RootLayout({
+  children,
+}: Readonly<{
   children: React.ReactNode;
-}) {
-  return (
-    <html lang="hr">
-      <body>
-        <header
-          style={{
-            background: "#fff",
-            borderBottom: "1px solid #e5e7eb",
-            position: "sticky",
-            top: 0,
-            zIndex: 20
-          }}
-        >
-          <div
-            className="container"
-            style={{
-              height: 68,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between"
-            }}
-          >
-            <Link href="/" style={{ fontWeight: 900, fontSize: 22 }}>
-              WATCH<span style={{ color: "#6b7280" }}>SHOP</span>
-            </Link>
+}>) {
+  const supabase = await createClient();
 
-            <nav style={{ display: "flex", gap: 18, alignItems: "center" }}>
-              <Link href="/">Početna</Link>
-              <Link href="/shop">Satovi</Link>
-              <Link
-                href="/cart"
-                style={{
-                  display: "flex",
-                  gap: 6,
-                  alignItems: "center"
-                }}
-              >
-                <ShoppingBag size={19} />
-                Košarica
-              </Link>
-            </nav>
-          </div>
-        </header>
+  const { data } = await supabase
+    .from("products")
+    .select("*")
+    .eq("active", true)
+    .order("created_at", { ascending: false });
+
+  const products = (data ?? []) as Product[];
+
+  return (
+    <html lang="bs">
+      <body>
+        <Header products={products} />
 
         {children}
 
-        <footer
-          style={{
-            marginTop: 60,
-            padding: "35px 0",
-            background: "#111827",
-            color: "#fff"
-          }}
-        >
-          <div
-            className="container"
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              gap: 20,
-              flexWrap: "wrap"
-            }}
-          >
-            <div>
-              <b>WATCHSHOP</b>
-              <div style={{ opacity: 0.7, marginTop: 8 }}>
-                Kvalitetni satovi po povoljnim cijenama.
+        <footer className="site-footer">
+          <div className="container">
+            <div className="footer-inner">
+              <div>
+                <div className="logo">WATCHSHOP</div>
+                <p className="footer-muted">
+                  Kvalitetni satovi za svaki stil.
+                </p>
               </div>
-            </div>
 
-            <div style={{ opacity: 0.7 }}>
-              © {new Date().getFullYear()} Watch Shop
+              <div>
+                <p className="footer-muted">
+                  © {new Date().getFullYear()} WATCHSHOP
+                </p>
+              </div>
             </div>
           </div>
         </footer>
